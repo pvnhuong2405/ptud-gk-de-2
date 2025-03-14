@@ -32,13 +32,13 @@
             <li class="user-profile">
               <a href="{{ url_for('profile') }}">
                 <div
-                  class="avatar"
-                  style="background-image: url('{{ user.avatar if user.avatar.startswith('http') else url_for('static', filename='uploads/' + user.avatar) }}')"
-                >
-                  {% if overdue_count and overdue_count > 0 %}
+                class="avatar"
+                style="background-image: url('{% if user.avatar.startswith('http') %}{{ user.avatar }}{% else %}{{ url_for('static', filename='uploads/' + user.avatar) }}{% endif %}')"
+              >
+                {% if overdue_count and overdue_count > 0 %}
                   <span class="badge">{{ overdue_count }}</span>
-                  {% endif %}
-                </div>
+                {% endif %}
+              </div>
                 <span>{{ user.name }}</span>
               </a>
             </li>

@@ -1,7 +1,2 @@
 flask
 flask_sqlalchemy
-os
-datetime
-werkzeug
-secrets
-random

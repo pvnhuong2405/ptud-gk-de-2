@@ -93,7 +93,7 @@ def get_random_avatar():
     # Dùng Liara avatar placeholder service hoặc tạo ngẫu nhiên
     gender = random.choice(['male', 'female'])
     index = random.randint(1, 100)
-    return f"https://avatar-placeholder.iran.liara.run/public/{gender}/{index}"
+    return f"https://avatar.iran.liara.run/public/{gender}/{index}"
 
 # Routes
 @app.route('/')
@@ -103,6 +103,8 @@ def index():
     
     user = User.query.get(session['user_id'])
     categories = Category.query.all()
+
+    now = datetime.utcnow()
     
     # Lấy tất cả tasks của người dùng
     if user.is_admin:
@@ -113,10 +115,10 @@ def index():
     # Đếm số công việc quá hạn
     overdue_tasks = []
     for task in tasks:
-        if task.due_date and task.status != 'completed' and task.due_date < datetime.utcnow():
+        if task.due_date and task.status != 'completed' and task.due_date < now:
             overdue_tasks.append(task)
     
-    return render_template('index.html', user=user, tasks=tasks, categories=categories, overdue_count=len(overdue_tasks))
+    return render_template('index.html', user=user, tasks=tasks, categories=categories, overdue_count=len(overdue_tasks),now=now)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
