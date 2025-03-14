@@ -1,0 +1,107 @@
+{% extends "layout.html" %} {% block content %}
+<div class="dashboard">
+  <div class="dashboard-header">
+    <h2>Danh sách công việc</h2>
+    <a href="{{ url_for('add_task') }}" class="btn primary">
+      <i class="fas fa-plus"></i> Thêm công việc
+    </a>
+  </div>
+
+  <div class="filters">
+    <div class="filter-group">
+      <label for="category-filter">Danh mục:</label>
+      <select id="category-filter">
+        <option value="all">Tất cả</option>
+        {% for category in categories %}
+        <option value="{{ category.id }}">{{ category.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="status-filter">Trạng thái:</label>
+      <select id="status-filter">
+        <option value="all">Tất cả</option>
+        <option value="pending">Chưa bắt đầu</option>
+        <option value="in-progress">Đang thực hiện</option>
+        <option value="completed">Hoàn thành</option>
+      </select>
+    </div>
+  </div>
+
+  {% if overdue_count and overdue_count > 0 %}
+  <div class="alert warning">
+    <i class="fas fa-exclamation-triangle"></i>
+    Bạn có {{ overdue_count }} công việc đang trễ hạn!
+  </div>
+  {% endif %}
+
+  <div class="task-container card-layout">
+    {% for task in tasks %}
+    <div
+      class="task-card"
+      data-category="{{ task.category_id }}"
+      data-status="{{ task.status }}"
+    >
+      <div class="task-header">
+        <h3>{{ task.title }}</h3>
+        <span class="task-category">{{ task.category.name }}</span>
+      </div>
+      <div class="task-body">
+        <p>{{ task.description }}</p>
+      </div>
+      <div class="task-footer">
+        <div class="task-meta">
+          <div class="task-dates">
+            <div>
+              <i class="fas fa-calendar-plus"></i>
+              <span>{{ task.created.strftime('%d/%m/%Y') }}</span>
+            </div>
+            {% if task.due_date %}
+            <div
+              class="{% if task.due_date < now and task.status != 'completed' %}overdue{% endif %}"
+            >
+              <i class="fas fa-calendar-day"></i>
+              <span>{{ task.due_date.strftime('%d/%m/%Y') }}</span>
+            </div>
+            {% endif %} {% if task.finished %}
+            <div>
+              <i class="fas fa-calendar-check"></i>
+              <span>{{ task.finished.strftime('%d/%m/%Y') }}</span>
+            </div>
+            {% endif %}
+          </div>
+          <div class="task-status {{ task.status }}">
+            {% if task.status == 'pending' %}
+            <span><i class="fas fa-hourglass-start"></i> Chưa bắt đầu</span>
+            {% elif task.status == 'in-progress' %}
+            <span><i class="fas fa-spinner"></i> Đang thực hiện</span>
+            {% elif task.status == 'completed' %}
+            <span><i class="fas fa-check-circle"></i> Hoàn thành</span>
+            {% endif %}
+          </div>
+        </div>
+        <div class="task-actions">
+          <a href="{{ url_for('edit_task', task_id=task.id) }}" class="btn sm">
+            <i class="fas fa-edit"></i>
+          </a>
+          <form
+            action="{{ url_for('delete_task', task_id=task.id) }}"
+            method="post"
+            onsubmit="return confirm('Bạn có chắc muốn xóa công việc này?')"
+          >
+            <button type="submit" class="btn sm danger">
+              <i class="fas fa-trash"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i class="fas fa-tasks"></i>
+      <p>Bạn chưa có công việc nào. Hãy thêm công việc mới!</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

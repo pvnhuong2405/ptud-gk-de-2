@@ -1,0 +1,23 @@
+{% extends "layout.html" %} {% block content %}
+<div class="auth-container">
+  <div class="auth-form">
+    <h2>Đăng nhập</h2>
+    <form method="post">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required />
+      </div>
+      <div class="form-group">
+        <label for="password">Mật khẩu</label>
+        <input type="password" id="password" name="password" required />
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn primary">Đăng nhập</button>
+      </div>
+    </form>
+    <div class="auth-links">
+      <p>Chưa có tài khoản? <a href="{{ url_for('register') }}">Đăng ký</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

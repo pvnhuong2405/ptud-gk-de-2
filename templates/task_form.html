@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="form-container">
+    <h2>{{ 'Chỉnh sửa công việc' if task else 'Thêm công việc mới' }}</h2>
+    <form method="post">
+        <div class="form-group">
+            <label for="title">Tiêu đề</label>
+            <input type="text" id="title" name="title" required value="{{ task.title if task else '' }}">
+        </div>
+        <div class="form-group">
+            <label for="description">Mô tả</label>
+            <textarea id="description" name="description" rows="5">{{ task.description if task else '' }}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="category_id">Danh mục</label>
+            <select id="category_id" name="category_id" required>
+                {% for category in categories %}
+                <option value="{{ category.id }}" {{ 'selected' if task and task.category_id == category.id else '' }}>
+                    {{ category.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="due_date">Thời hạn</label>
+            <input type="datetime-local" id="due_date" name="due_date" value="{{ due_date_str if due_date_str else '' }}">
+        </div>
+        {% if task %}
+        <div class="form-group">
+            <label for="status">Trạng thái</label>
+            <select id="status" name="status" required>
+                <option value="pending" {{ 'selected' if task.status == 'pending' else '' }}>Chưa bắt đầu</option>
+                <option value="in-progress" {{ 'selected' if task.status == 'in-progress' else '' }}>Đang thực hiện</option>
+                <option value="completed" {{ 'selected' if task.status == 'completed' else '' }}>Hoàn thành</option>
+            </select>
+        </div>
+        {% endif %}
+        <div class="form-actions">
+            <a href="{{ url_for('index') }}" class="btn">Hủy</a>
+            <button type="submit" class="btn primary">{{ 'Cập nhật' if task else 'Thêm mới' }}</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
